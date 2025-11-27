@@ -1,37 +1,25 @@
-const fs = require('fs');
-const wa = require('@open-wa/wa-automate');
+import makeWASocket, { useMultiFileAuthState, fetchLatestBaileysVersion } from "@whiskeysockets/baileys";
 
-(async () => {
-  try {
-    console.log('Starting open-wa to generate session token (pair-mode)...');
+async function generatePairCode() {
+    const { state, saveCreds } = await useMultiFileAuthState("./auth_info_baileys");
+    const { version } = await fetchLatestBaileysVersion();
 
-    const client = await wa.create({
-      headless: true,
-      useChrome: true,
-      qrTimeout: 60,
-      authTimeout: 0,
-      disableSpins: true,
-      sessionDataPath: './session.json',
-      qrLogSkip: false,
-      logLevel: 'info'
+    const sock = makeWASocket({
+        version,
+        auth: state,
+        printQRInTerminal: false
     });
 
-    try {
-      const session = await client.getSessionTokenBrowser();
-      if (!session) {
-        console.error('⚠️ No session token returned. WhatsApp might require QR/pairing.');
-      } else {
-        fs.writeFileSync('session.json', JSON.stringify(session, null, 2));
-        console.log('✔️ session.json generated successfully.');
-      }
-    } catch (err) {
-      console.error('Error retrieving session token:', err?.message || err);
-    }
+    // Request WhatsApp Pair Code
+    const code = await sock.requestPairingCode("YOUR_NUMBER_HERE");
 
-    try { await client.kill(); } catch {}
-    process.exit(0);
-  } catch (e) {
-    console.error('Fatal error:', e?.message || e);
-    process.exit(1);
-  }
-})();
+    console.log("======================================");
+    console.log("         YOUR WHATSAPP PAIR CODE      ");
+    console.log("======================================");
+    console.log("Pair Code:", code);
+    console.log("======================================");
+
+    sock.ev.on("creds.update", saveCreds);
+}
+
+generatePairCode();
