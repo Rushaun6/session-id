@@ -1,0 +1,9 @@
+{
+  "name": "gen-session",
+  "version": "1.0.0",
+  "main": "gen-pair.js",
+  "license": "MIT",
+  "dependencies": {
+    "@open-wa/wa-automate": "^4.76.0"
+  }
+}
