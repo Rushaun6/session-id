@@ -1,9 +1,10 @@
 {
-  "name": "gen-session",
+  "name": "baileys-session-generator",
   "version": "1.0.0",
   "main": "gen-pair.js",
-  "license": "MIT",
+  "type": "module",
   "dependencies": {
-    "@open-wa/wa-automate": "^4.76.0"
+    "@whiskeysockets/baileys": "latest",
+    "qrcode-terminal": "latest"
   }
 }
