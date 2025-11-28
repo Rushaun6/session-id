@@ -1,25 +1,26 @@
-import makeWASocket, { useMultiFileAuthState, fetchLatestBaileysVersion } from "@whiskeysockets/baileys";
+import makeWASocket, { useMultiFileAuthState, Browsers } from "@whiskeysockets/baileys"
 
 async function generatePairCode() {
-    const { state, saveCreds } = await useMultiFileAuthState("./auth_info_baileys");
-    const { version } = await fetchLatestBaileysVersion();
+    const { state, saveCreds } = await useMultiFileAuthState("./auth_info")
 
     const sock = makeWASocket({
-        version,
         auth: state,
-        printQRInTerminal: false
-    });
+        printQRInTerminal: false,
+        browser: Browsers.ubuntu("Chrome"),
+        syncFullHistory: false,
+        markOnlineOnConnect: false,
+        connectTimeoutMs: 30_000,
+    })
 
-    // Request WhatsApp Pair Code
-    const code = await sock.requestPairingCode("18763991485");
+    sock.ev.on("creds.update", saveCreds)
 
-    console.log("======================================");
-    console.log("         YOUR WHATSAPP PAIR CODE      ");
-    console.log("======================================");
-    console.log("Pair Code:", code);
-    console.log("======================================");
-
-    sock.ev.on("creds.update", saveCreds);
+    try {
+        console.log("Requesting pairing code...")
+        const code = await sock.requestPairingCode("1") // your phone number country code only
+        console.log("PAIR CODE:", code)
+    } catch (err) {
+        console.error("Error:", err)
+    }
 }
 
-generatePairCode();
+generatePairCode()
