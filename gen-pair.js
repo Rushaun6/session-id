@@ -1,26 +1,24 @@
 import makeWASocket, { useMultiFileAuthState, Browsers } from "@whiskeysockets/baileys"
 
 async function generatePairCode() {
-    const { state, saveCreds } = await useMultiFileAuthState("./auth_info")
+  console.log("Requesting pairing code...")
 
-    const sock = makeWASocket({
-        auth: state,
-        printQRInTerminal: false,
-        browser: Browsers.ubuntu("Chrome"),
-        syncFullHistory: false,
-        markOnlineOnConnect: false,
-        connectTimeoutMs: 30_000,
-    })
+  const { state, saveCreds } = await useMultiFileAuthState("./auth_info")
 
-    sock.ev.on("creds.update", saveCreds)
+  const sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: false,   // IMPORTANT
+    browser: Browsers.macOS("Safari"),
+  })
 
-    try {
-        console.log("Requesting pairing code...")
-        const code = await sock.requestPairingCode("1") // your phone number country code only
-        console.log("PAIR CODE:", code)
-    } catch (err) {
-        console.error("Error:", err)
-    }
+  sock.ev.on("creds.update", saveCreds)
+
+  try {
+    const code = await sock.requestPairingCode("1")  // Jamaica ✔
+    console.log("PAIR CODE:", code)
+  } catch (err) {
+    console.error("Error:", err)
+  }
 }
 
 generatePairCode()
