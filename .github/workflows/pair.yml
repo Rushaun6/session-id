@@ -1,4 +1,4 @@
-name: Generate Pair Code
+name: pair
 
 on:
   workflow_dispatch:
@@ -6,18 +6,17 @@ on:
 jobs:
   pair:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install deps
-        run: npm install
+        run: npm install @whiskeysockets/baileys
 
-      - name: Generate Pair Code
+      - name: Run pair code generator
         run: node gen-pair.js
