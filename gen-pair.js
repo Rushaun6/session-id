@@ -11,7 +11,7 @@ async function generatePairCode() {
     });
 
     // Request WhatsApp Pair Code
-    const code = await sock.requestPairingCode("YOUR_NUMBER_HERE");
+    const code = await sock.requestPairingCode("18763391485");
 
     console.log("======================================");
     console.log("         YOUR WHATSAPP PAIR CODE      ");
